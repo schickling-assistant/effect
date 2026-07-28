@@ -357,9 +357,14 @@ export const AnthropicCodeExecutionOutput = Schema.Struct({
   "file_id": Schema.String,
   "type": Schema.Literal("code_execution_output")
 }).annotate({ "identifier": "AnthropicCodeExecutionOutput" })
-export type AnthropicCompactionBlock = { readonly "content": string | null; readonly "type": "compaction" }
+export type AnthropicCompactionBlock = {
+  readonly "content": string | null
+  readonly "encrypted_content"?: string | null
+  readonly "type": "compaction"
+}
 export const AnthropicCompactionBlock = Schema.Struct({
   "content": Schema.Union([Schema.String, Schema.Null]),
+  "encrypted_content": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
   "type": Schema.Literal("compaction")
 }).annotate({ "identifier": "AnthropicCompactionBlock" })
 export type AnthropicContainer = {
@@ -1311,6 +1316,7 @@ export type BYOKProviderSlug =
   | "meta"
   | "minimax"
   | "mistral"
+  | "modal"
   | "modelrun"
   | "modular"
   | "moonshotai"
@@ -1335,6 +1341,7 @@ export type BYOKProviderSlug =
   | "runway"
   | "sail-research"
   | "sakana"
+  | "sakana-ai"
   | "sambanova"
   | "seed"
   | "siliconflow"
@@ -1349,6 +1356,7 @@ export type BYOKProviderSlug =
   | "venice"
   | "wafer"
   | "wandb"
+  | "wandb-legacy"
   | "xai"
   | "xiaomi"
   | "z-ai"
@@ -1408,6 +1416,7 @@ export const BYOKProviderSlug = Schema.Literals([
   "meta",
   "minimax",
   "mistral",
+  "modal",
   "modelrun",
   "modular",
   "moonshotai",
@@ -1432,6 +1441,7 @@ export const BYOKProviderSlug = Schema.Literals([
   "runway",
   "sail-research",
   "sakana",
+  "sakana-ai",
   "sambanova",
   "seed",
   "siliconflow",
@@ -1446,6 +1456,7 @@ export const BYOKProviderSlug = Schema.Literals([
   "venice",
   "wafer",
   "wandb",
+  "wandb-legacy",
   "xai",
   "xiaomi",
   "z-ai"
@@ -3722,6 +3733,7 @@ export const OpenResponsesTopLogprobs = Schema.Struct({
 export type ORAnthropicStopReason =
   | "end_turn"
   | "max_tokens"
+  | "model_context_window_exceeded"
   | "stop_sequence"
   | "tool_use"
   | "pause_turn"
@@ -3731,6 +3743,7 @@ export type ORAnthropicStopReason =
 export const ORAnthropicStopReason = Schema.Union([
   Schema.Literal("end_turn"),
   Schema.Literal("max_tokens"),
+  Schema.Literal("model_context_window_exceeded"),
   Schema.Literal("stop_sequence"),
   Schema.Literal("tool_use"),
   Schema.Literal("pause_turn"),
@@ -4249,6 +4262,7 @@ export const PromptInjectionScanScope = Schema.Literals(["user_only", "all_messa
   "identifier": "PromptInjectionScanScope"
 })
 export type ProviderName =
+  | "Modal"
   | "AkashML"
   | "AI21"
   | "AionLabs"
@@ -4268,6 +4282,7 @@ export type ProviderName =
   | "Cerebras"
   | "Chutes"
   | "Cirrascale"
+  | "Claude Platform on AWS"
   | "Clarifai"
   | "Cloudflare"
   | "Cohere"
@@ -4308,6 +4323,7 @@ export type ProviderName =
   | "Modular"
   | "Moonshot AI"
   | "Morph"
+  | "VoyageAI by MongoDB"
   | "NCompass"
   | "Nebius"
   | "Nex AGI"
@@ -4349,6 +4365,7 @@ export type ProviderName =
   | "Z.AI"
   | "FakeProvider"
 export const ProviderName = Schema.Literals([
+  "Modal",
   "AkashML",
   "AI21",
   "AionLabs",
@@ -4368,6 +4385,7 @@ export const ProviderName = Schema.Literals([
   "Cerebras",
   "Chutes",
   "Cirrascale",
+  "Claude Platform on AWS",
   "Clarifai",
   "Cloudflare",
   "Cohere",
@@ -4408,6 +4426,7 @@ export const ProviderName = Schema.Literals([
   "Modular",
   "Moonshot AI",
   "Morph",
+  "VoyageAI by MongoDB",
   "NCompass",
   "Nebius",
   "Nex AGI",
@@ -4703,6 +4722,14 @@ export type Objects_146 = {}
 export const Objects_146 = Schema.Struct({})
 export type Objects_147 = {}
 export const Objects_147 = Schema.Struct({})
+export type Objects_148 = {}
+export const Objects_148 = Schema.Struct({})
+export type Objects_149 = {}
+export const Objects_149 = Schema.Struct({})
+export type Objects_150 = {}
+export const Objects_150 = Schema.Struct({})
+export type Objects_151 = {}
+export const Objects_151 = Schema.Struct({})
 export type ProviderOverloadedResponseErrorData = {
   readonly "code": number
   readonly "message": string
@@ -4772,6 +4799,7 @@ export type ProviderResponse = {
     | "Cerebras"
     | "Chutes"
     | "Cirrascale"
+    | "Claude Platform on AWS"
     | "Clarifai"
     | "Cloudflare"
     | "Cohere"
@@ -4812,6 +4840,7 @@ export type ProviderResponse = {
     | "Modular"
     | "Moonshot AI"
     | "Morph"
+    | "VoyageAI by MongoDB"
     | "NCompass"
     | "Nebius"
     | "Nex AGI"
@@ -4916,6 +4945,7 @@ export const ProviderResponse = Schema.Struct({
       "Cerebras",
       "Chutes",
       "Cirrascale",
+      "Claude Platform on AWS",
       "Clarifai",
       "Cloudflare",
       "Cohere",
@@ -4956,6 +4986,7 @@ export const ProviderResponse = Schema.Struct({
       "Modular",
       "Moonshot AI",
       "Morph",
+      "VoyageAI by MongoDB",
       "NCompass",
       "Nebius",
       "Nex AGI",
@@ -5252,8 +5283,8 @@ export const RefusalDoneEvent = Schema.Struct({
   "sequence_number": Schema.Number.check(Schema.isInt().annotate({ "expected": "an integer" })),
   "type": Schema.Literal("response.refusal.done")
 }).annotate({ "description": "Event emitted when refusal streaming is complete", "identifier": "RefusalDoneEvent" })
-export type Objects_149 = { readonly [x: string]: string }
-export const Objects_149 = Schema.Record(
+export type Objects_153 = { readonly [x: string]: string }
+export const Objects_153 = Schema.Record(
   Schema.String,
   Schema.String.check(Schema.isMaxLength(512).annotate({ "expected": "a value with a length of at most 512" }))
 )
@@ -5413,13 +5444,13 @@ export const SearchQualityLevel = Schema.Literals(["low", "medium", "high"]).ann
     "How much context to retrieve per result. Applies to Exa, Parallel, and Perplexity engines; ignored with native provider search and Firecrawl. For Exa, pins a fixed per-result character cap (low=5,000, medium=15,000, high=30,000); when omitted, Exa picks an adaptive size per query and document (typically ~2,000–4,000 characters per result). For Parallel, controls the total characters across all results; when omitted, Parallel uses its own default size. For Perplexity, maps directly to the Search API's native search_context_size parameter. Overridden by `max_characters` when both are set.",
   "identifier": "SearchQualityLevel"
 })
-export type Objects_150 = {
+export type Objects_154 = {
   readonly "tool_calls_executed"?: number | null
   readonly "tool_calls_requested"?: number | null
   readonly "web_search_requests"?: number | null
   readonly [x: string]: Schema.Json
 }
-export const Objects_150 = Schema.StructWithRest(
+export const Objects_154 = Schema.StructWithRest(
   Schema.Struct({
     "tool_calls_executed": Schema.optionalKey(
       Schema.Union([Schema.Number.check(Schema.isInt().annotate({ "expected": "an integer" })), Schema.Null]).annotate({
@@ -5579,6 +5610,7 @@ export type STTSegment = {
   readonly "id": number
   readonly "no_speech_prob"?: number
   readonly "seek"?: number
+  readonly "speaker"?: number
   readonly "start": number
   readonly "temperature"?: number
   readonly "text": string
@@ -5610,6 +5642,11 @@ export const STTSegment = Schema.Struct({
     Schema.Number.annotate({ "description": "Seek offset of the segment" }).check(
       Schema.isInt().annotate({ "expected": "an integer" })
     )
+  ),
+  "speaker": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description": "Speaker index for the segment, present when the provider returns diarization data"
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
   "start": Schema.Number.annotate({ "description": "Segment start time in seconds", "format": "double" }).check(
     Schema.isFinite().annotate({ "expected": "a finite number" })
@@ -5680,7 +5717,7 @@ export const STTWord = Schema.Struct({
   ),
   "speaker": Schema.optionalKey(
     Schema.Number.annotate({
-      "description": "Zero-based speaker index for the word, present when the provider returns speaker diarization"
+      "description": "Speaker index for the word, present when the provider returns diarization data"
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
   "start": Schema.Number.annotate({ "description": "Word start time in seconds", "format": "double" }).check(
@@ -6170,8 +6207,14 @@ export const UpdateWorkspaceRequest = Schema.Struct({
     )
   )
 }).annotate({ "identifier": "UpdateWorkspaceRequest" })
-export type UpsertWorkspaceBudgetRequest = { readonly "limit_usd": number }
+export type UpsertWorkspaceBudgetRequest = {
+  readonly "include_byok_in_budgets"?: boolean
+  readonly "limit_usd": number
+}
 export const UpsertWorkspaceBudgetRequest = Schema.Struct({
+  "include_byok_in_budgets": Schema.optionalKey(
+    Schema.Boolean.annotate({ "description": "Whether to include BYOK spend in the workspace budget" })
+  ),
   "limit_usd": Schema.Number.annotate({
     "description": "Spending limit in USD. Must be greater than 0.",
     "format": "double"
@@ -6432,12 +6475,12 @@ export const Arrays_16 = Schema.Array(Schema.String).annotate({
   "description":
     "Exclude search results from these domains. Supported by Exa, Firecrawl, Parallel, Perplexity, Anthropic, and xAI. Not supported with OpenAI (silently ignored). Cannot be used with allowed_domains."
 })
-export type Objects_152 = {
+export type Objects_156 = {
   readonly "allowed_domains"?: ReadonlyArray<string> | null
   readonly "excluded_domains"?: ReadonlyArray<string> | null
   readonly [x: string]: Schema.Json
 }
-export const Objects_152 = Schema.StructWithRest(
+export const Objects_156 = Schema.StructWithRest(
   Schema.Struct({
     "allowed_domains": Schema.optionalKey(Schema.Union([Schema.Array(Schema.String), Schema.Null])),
     "excluded_domains": Schema.optionalKey(Schema.Union([Schema.Array(Schema.String), Schema.Null]))
@@ -6474,7 +6517,7 @@ export type WebSearchStatus = "completed" | "searching" | "in_progress" | "faile
 export const WebSearchStatus = Schema.Literals(["completed", "searching", "in_progress", "failed"]).annotate({
   "identifier": "WebSearchStatus"
 })
-export type Objects_153 = {
+export type Objects_157 = {
   readonly "city"?: string | null
   readonly "country"?: string | null
   readonly "region"?: string | null
@@ -6482,7 +6525,7 @@ export type Objects_153 = {
   readonly "type"?: "approximate"
   readonly [x: string]: Schema.Json
 }
-export const Objects_153 = Schema.StructWithRest(
+export const Objects_157 = Schema.StructWithRest(
   Schema.Struct({
     "city": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
     "country": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
@@ -6693,7 +6736,11 @@ export type MessagesContentBlockDeltaEvent = {
         | AnthropicCitationSearchResultLocation
       readonly "type": "citations_delta"
     }
-    | { readonly "content": string | null; readonly "type": "compaction_delta" }
+    | {
+      readonly "content": string | null
+      readonly "encrypted_content"?: string | null
+      readonly "type": "compaction_delta"
+    }
   readonly "index": number
   readonly "type": "content_block_delta"
 }
@@ -6713,7 +6760,11 @@ export const MessagesContentBlockDeltaEvent = Schema.Struct({
       ], { mode: "oneOf" }),
       "type": Schema.Literal("citations_delta")
     }),
-    Schema.Struct({ "content": Schema.Union([Schema.String, Schema.Null]), "type": Schema.Literal("compaction_delta") })
+    Schema.Struct({
+      "content": Schema.Union([Schema.String, Schema.Null]),
+      "encrypted_content": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+      "type": Schema.Literal("compaction_delta")
+    })
   ], { mode: "oneOf" }),
   "index": Schema.Number.check(Schema.isInt().annotate({ "expected": "an integer" })),
   "type": Schema.Literal("content_block_delta")
@@ -7882,109 +7933,113 @@ export type ProviderOptions = {
   readonly "chutes"?: Objects_42
   readonly "cirrascale"?: Objects_43
   readonly "clarifai"?: Objects_44
-  readonly "cloudflare"?: Objects_45
-  readonly "cohere"?: Objects_46
-  readonly "coreweave"?: Objects_47
-  readonly "crofai"?: Objects_48
-  readonly "crucible"?: Objects_49
-  readonly "crusoe"?: Objects_50
-  readonly "darkbloom"?: Objects_51
-  readonly "decart"?: Objects_52
-  readonly "deepgram"?: Objects_53
-  readonly "deepinfra"?: Objects_54
-  readonly "deepseek"?: Objects_55
-  readonly "dekallm"?: Objects_56
-  readonly "digitalocean"?: Objects_57
-  readonly "enfer"?: Objects_58
-  readonly "fake-provider"?: Objects_59
-  readonly "featherless"?: Objects_60
-  readonly "fireworks"?: Objects_61
-  readonly "fish-audio"?: Objects_62
-  readonly "friendli"?: Objects_63
-  readonly "gmicloud"?: Objects_64
-  readonly "google-ai-studio"?: Objects_65
-  readonly "google-vertex"?: Objects_66
-  readonly "gopomelo"?: Objects_67
-  readonly "groq"?: Objects_68
-  readonly "heygen"?: Objects_69
-  readonly "huggingface"?: Objects_70
-  readonly "hyperbolic"?: Objects_71
-  readonly "hyperbolic-quantized"?: Objects_72
-  readonly "inception"?: Objects_73
-  readonly "inceptron"?: Objects_74
-  readonly "inferact-vllm"?: Objects_75
-  readonly "inference-net"?: Objects_76
-  readonly "infermatic"?: Objects_77
-  readonly "inflection"?: Objects_78
-  readonly "inocloud"?: Objects_79
-  readonly "io-net"?: Objects_80
-  readonly "ionstream"?: Objects_81
-  readonly "klusterai"?: Objects_82
-  readonly "krea"?: Objects_83
-  readonly "lambda"?: Objects_84
-  readonly "lepton"?: Objects_85
-  readonly "liquid"?: Objects_86
-  readonly "lynn"?: Objects_87
-  readonly "lynn-private"?: Objects_88
-  readonly "mancer"?: Objects_89
-  readonly "mancer-old"?: Objects_90
-  readonly "mara"?: Objects_91
-  readonly "meta"?: Objects_92
-  readonly "minimax"?: Objects_93
-  readonly "mistral"?: Objects_94
-  readonly "modal"?: Objects_95
-  readonly "modelrun"?: Objects_96
-  readonly "modular"?: Objects_97
-  readonly "moonshotai"?: Objects_98
-  readonly "morph"?: Objects_99
-  readonly "ncompass"?: Objects_100
-  readonly "nebius"?: Objects_101
-  readonly "nex-agi"?: Objects_102
-  readonly "nextbit"?: Objects_103
-  readonly "nineteen"?: Objects_104
-  readonly "novita"?: Objects_105
-  readonly "nvidia"?: Objects_106
-  readonly "octoai"?: Objects_107
-  readonly "open-inference"?: Objects_108
-  readonly "openai"?: Objects_109
-  readonly "parasail"?: Objects_110
-  readonly "perceptron"?: Objects_111
-  readonly "perplexity"?: Objects_112
-  readonly "phala"?: Objects_113
-  readonly "poolside"?: Objects_114
-  readonly "quiver"?: Objects_115
-  readonly "recraft"?: Objects_116
-  readonly "recursal"?: Objects_117
-  readonly "reflection"?: Objects_118
-  readonly "reka"?: Objects_119
-  readonly "relace"?: Objects_120
-  readonly "replicate"?: Objects_121
-  readonly "runway"?: Objects_122
-  readonly "sail-research"?: Objects_123
-  readonly "sakana"?: Objects_124
-  readonly "sambanova"?: Objects_125
-  readonly "sambanova-cloaked"?: Objects_126
-  readonly "seed"?: Objects_127
-  readonly "sf-compute"?: Objects_128
-  readonly "siliconflow"?: Objects_129
-  readonly "sourceful"?: Objects_130
-  readonly "stealth"?: Objects_131
-  readonly "stepfun"?: Objects_132
-  readonly "streamlake"?: Objects_133
-  readonly "switchpoint"?: Objects_134
-  readonly "targon"?: Objects_135
-  readonly "tencent"?: Objects_136
-  readonly "tenstorrent"?: Objects_137
-  readonly "together"?: Objects_138
-  readonly "together-lite"?: Objects_139
-  readonly "ubicloud"?: Objects_140
-  readonly "upstage"?: Objects_141
-  readonly "venice"?: Objects_142
-  readonly "wafer"?: Objects_143
-  readonly "wandb"?: Objects_144
-  readonly "xai"?: Objects_145
-  readonly "xiaomi"?: Objects_146
-  readonly "z-ai"?: Objects_147
+  readonly "claude-on-aws"?: Objects_45
+  readonly "cloudflare"?: Objects_46
+  readonly "cohere"?: Objects_47
+  readonly "coreweave"?: Objects_48
+  readonly "crofai"?: Objects_49
+  readonly "crucible"?: Objects_50
+  readonly "crusoe"?: Objects_51
+  readonly "darkbloom"?: Objects_52
+  readonly "decart"?: Objects_53
+  readonly "deepgram"?: Objects_54
+  readonly "deepinfra"?: Objects_55
+  readonly "deepseek"?: Objects_56
+  readonly "dekallm"?: Objects_57
+  readonly "digitalocean"?: Objects_58
+  readonly "enfer"?: Objects_59
+  readonly "fake-provider"?: Objects_60
+  readonly "featherless"?: Objects_61
+  readonly "fireworks"?: Objects_62
+  readonly "fish-audio"?: Objects_63
+  readonly "friendli"?: Objects_64
+  readonly "gmicloud"?: Objects_65
+  readonly "google-ai-studio"?: Objects_66
+  readonly "google-vertex"?: Objects_67
+  readonly "gopomelo"?: Objects_68
+  readonly "groq"?: Objects_69
+  readonly "heygen"?: Objects_70
+  readonly "huggingface"?: Objects_71
+  readonly "hyperbolic"?: Objects_72
+  readonly "hyperbolic-quantized"?: Objects_73
+  readonly "inception"?: Objects_74
+  readonly "inceptron"?: Objects_75
+  readonly "inferact-vllm"?: Objects_76
+  readonly "inference-net"?: Objects_77
+  readonly "infermatic"?: Objects_78
+  readonly "inflection"?: Objects_79
+  readonly "inocloud"?: Objects_80
+  readonly "io-net"?: Objects_81
+  readonly "ionstream"?: Objects_82
+  readonly "klusterai"?: Objects_83
+  readonly "krea"?: Objects_84
+  readonly "lambda"?: Objects_85
+  readonly "lepton"?: Objects_86
+  readonly "liquid"?: Objects_87
+  readonly "lynn"?: Objects_88
+  readonly "lynn-private"?: Objects_89
+  readonly "mancer"?: Objects_90
+  readonly "mancer-old"?: Objects_91
+  readonly "mara"?: Objects_92
+  readonly "meta"?: Objects_93
+  readonly "minimax"?: Objects_94
+  readonly "mistral"?: Objects_95
+  readonly "modal"?: Objects_96
+  readonly "modelrun"?: Objects_97
+  readonly "modular"?: Objects_98
+  readonly "moonshotai"?: Objects_99
+  readonly "morph"?: Objects_100
+  readonly "ncompass"?: Objects_101
+  readonly "nebius"?: Objects_102
+  readonly "nex-agi"?: Objects_103
+  readonly "nextbit"?: Objects_104
+  readonly "nineteen"?: Objects_105
+  readonly "novita"?: Objects_106
+  readonly "nvidia"?: Objects_107
+  readonly "octoai"?: Objects_108
+  readonly "open-inference"?: Objects_109
+  readonly "openai"?: Objects_110
+  readonly "parasail"?: Objects_111
+  readonly "perceptron"?: Objects_112
+  readonly "perplexity"?: Objects_113
+  readonly "phala"?: Objects_114
+  readonly "poolside"?: Objects_115
+  readonly "quiver"?: Objects_116
+  readonly "recraft"?: Objects_117
+  readonly "recursal"?: Objects_118
+  readonly "reflection"?: Objects_119
+  readonly "reka"?: Objects_120
+  readonly "relace"?: Objects_121
+  readonly "replicate"?: Objects_122
+  readonly "runway"?: Objects_123
+  readonly "sail-research"?: Objects_124
+  readonly "sakana"?: Objects_125
+  readonly "sakana-ai"?: Objects_126
+  readonly "sambanova"?: Objects_127
+  readonly "sambanova-cloaked"?: Objects_128
+  readonly "seed"?: Objects_129
+  readonly "sf-compute"?: Objects_130
+  readonly "siliconflow"?: Objects_131
+  readonly "sourceful"?: Objects_132
+  readonly "stealth"?: Objects_133
+  readonly "stepfun"?: Objects_134
+  readonly "streamlake"?: Objects_135
+  readonly "switchpoint"?: Objects_136
+  readonly "targon"?: Objects_137
+  readonly "tencent"?: Objects_138
+  readonly "tenstorrent"?: Objects_139
+  readonly "together"?: Objects_140
+  readonly "together-lite"?: Objects_141
+  readonly "ubicloud"?: Objects_142
+  readonly "upstage"?: Objects_143
+  readonly "venice"?: Objects_144
+  readonly "voyageai"?: Objects_145
+  readonly "wafer"?: Objects_146
+  readonly "wandb"?: Objects_147
+  readonly "wandb-legacy"?: Objects_148
+  readonly "xai"?: Objects_149
+  readonly "xiaomi"?: Objects_150
+  readonly "z-ai"?: Objects_151
 }
 export const ProviderOptions = Schema.Struct({
   "01ai": Schema.optionalKey(Objects_21),
@@ -8011,109 +8066,113 @@ export const ProviderOptions = Schema.Struct({
   "chutes": Schema.optionalKey(Objects_42),
   "cirrascale": Schema.optionalKey(Objects_43),
   "clarifai": Schema.optionalKey(Objects_44),
-  "cloudflare": Schema.optionalKey(Objects_45),
-  "cohere": Schema.optionalKey(Objects_46),
-  "coreweave": Schema.optionalKey(Objects_47),
-  "crofai": Schema.optionalKey(Objects_48),
-  "crucible": Schema.optionalKey(Objects_49),
-  "crusoe": Schema.optionalKey(Objects_50),
-  "darkbloom": Schema.optionalKey(Objects_51),
-  "decart": Schema.optionalKey(Objects_52),
-  "deepgram": Schema.optionalKey(Objects_53),
-  "deepinfra": Schema.optionalKey(Objects_54),
-  "deepseek": Schema.optionalKey(Objects_55),
-  "dekallm": Schema.optionalKey(Objects_56),
-  "digitalocean": Schema.optionalKey(Objects_57),
-  "enfer": Schema.optionalKey(Objects_58),
-  "fake-provider": Schema.optionalKey(Objects_59),
-  "featherless": Schema.optionalKey(Objects_60),
-  "fireworks": Schema.optionalKey(Objects_61),
-  "fish-audio": Schema.optionalKey(Objects_62),
-  "friendli": Schema.optionalKey(Objects_63),
-  "gmicloud": Schema.optionalKey(Objects_64),
-  "google-ai-studio": Schema.optionalKey(Objects_65),
-  "google-vertex": Schema.optionalKey(Objects_66),
-  "gopomelo": Schema.optionalKey(Objects_67),
-  "groq": Schema.optionalKey(Objects_68),
-  "heygen": Schema.optionalKey(Objects_69),
-  "huggingface": Schema.optionalKey(Objects_70),
-  "hyperbolic": Schema.optionalKey(Objects_71),
-  "hyperbolic-quantized": Schema.optionalKey(Objects_72),
-  "inception": Schema.optionalKey(Objects_73),
-  "inceptron": Schema.optionalKey(Objects_74),
-  "inferact-vllm": Schema.optionalKey(Objects_75),
-  "inference-net": Schema.optionalKey(Objects_76),
-  "infermatic": Schema.optionalKey(Objects_77),
-  "inflection": Schema.optionalKey(Objects_78),
-  "inocloud": Schema.optionalKey(Objects_79),
-  "io-net": Schema.optionalKey(Objects_80),
-  "ionstream": Schema.optionalKey(Objects_81),
-  "klusterai": Schema.optionalKey(Objects_82),
-  "krea": Schema.optionalKey(Objects_83),
-  "lambda": Schema.optionalKey(Objects_84),
-  "lepton": Schema.optionalKey(Objects_85),
-  "liquid": Schema.optionalKey(Objects_86),
-  "lynn": Schema.optionalKey(Objects_87),
-  "lynn-private": Schema.optionalKey(Objects_88),
-  "mancer": Schema.optionalKey(Objects_89),
-  "mancer-old": Schema.optionalKey(Objects_90),
-  "mara": Schema.optionalKey(Objects_91),
-  "meta": Schema.optionalKey(Objects_92),
-  "minimax": Schema.optionalKey(Objects_93),
-  "mistral": Schema.optionalKey(Objects_94),
-  "modal": Schema.optionalKey(Objects_95),
-  "modelrun": Schema.optionalKey(Objects_96),
-  "modular": Schema.optionalKey(Objects_97),
-  "moonshotai": Schema.optionalKey(Objects_98),
-  "morph": Schema.optionalKey(Objects_99),
-  "ncompass": Schema.optionalKey(Objects_100),
-  "nebius": Schema.optionalKey(Objects_101),
-  "nex-agi": Schema.optionalKey(Objects_102),
-  "nextbit": Schema.optionalKey(Objects_103),
-  "nineteen": Schema.optionalKey(Objects_104),
-  "novita": Schema.optionalKey(Objects_105),
-  "nvidia": Schema.optionalKey(Objects_106),
-  "octoai": Schema.optionalKey(Objects_107),
-  "open-inference": Schema.optionalKey(Objects_108),
-  "openai": Schema.optionalKey(Objects_109),
-  "parasail": Schema.optionalKey(Objects_110),
-  "perceptron": Schema.optionalKey(Objects_111),
-  "perplexity": Schema.optionalKey(Objects_112),
-  "phala": Schema.optionalKey(Objects_113),
-  "poolside": Schema.optionalKey(Objects_114),
-  "quiver": Schema.optionalKey(Objects_115),
-  "recraft": Schema.optionalKey(Objects_116),
-  "recursal": Schema.optionalKey(Objects_117),
-  "reflection": Schema.optionalKey(Objects_118),
-  "reka": Schema.optionalKey(Objects_119),
-  "relace": Schema.optionalKey(Objects_120),
-  "replicate": Schema.optionalKey(Objects_121),
-  "runway": Schema.optionalKey(Objects_122),
-  "sail-research": Schema.optionalKey(Objects_123),
-  "sakana": Schema.optionalKey(Objects_124),
-  "sambanova": Schema.optionalKey(Objects_125),
-  "sambanova-cloaked": Schema.optionalKey(Objects_126),
-  "seed": Schema.optionalKey(Objects_127),
-  "sf-compute": Schema.optionalKey(Objects_128),
-  "siliconflow": Schema.optionalKey(Objects_129),
-  "sourceful": Schema.optionalKey(Objects_130),
-  "stealth": Schema.optionalKey(Objects_131),
-  "stepfun": Schema.optionalKey(Objects_132),
-  "streamlake": Schema.optionalKey(Objects_133),
-  "switchpoint": Schema.optionalKey(Objects_134),
-  "targon": Schema.optionalKey(Objects_135),
-  "tencent": Schema.optionalKey(Objects_136),
-  "tenstorrent": Schema.optionalKey(Objects_137),
-  "together": Schema.optionalKey(Objects_138),
-  "together-lite": Schema.optionalKey(Objects_139),
-  "ubicloud": Schema.optionalKey(Objects_140),
-  "upstage": Schema.optionalKey(Objects_141),
-  "venice": Schema.optionalKey(Objects_142),
-  "wafer": Schema.optionalKey(Objects_143),
-  "wandb": Schema.optionalKey(Objects_144),
-  "xai": Schema.optionalKey(Objects_145),
-  "xiaomi": Schema.optionalKey(Objects_146),
-  "z-ai": Schema.optionalKey(Objects_147)
+  "claude-on-aws": Schema.optionalKey(Objects_45),
+  "cloudflare": Schema.optionalKey(Objects_46),
+  "cohere": Schema.optionalKey(Objects_47),
+  "coreweave": Schema.optionalKey(Objects_48),
+  "crofai": Schema.optionalKey(Objects_49),
+  "crucible": Schema.optionalKey(Objects_50),
+  "crusoe": Schema.optionalKey(Objects_51),
+  "darkbloom": Schema.optionalKey(Objects_52),
+  "decart": Schema.optionalKey(Objects_53),
+  "deepgram": Schema.optionalKey(Objects_54),
+  "deepinfra": Schema.optionalKey(Objects_55),
+  "deepseek": Schema.optionalKey(Objects_56),
+  "dekallm": Schema.optionalKey(Objects_57),
+  "digitalocean": Schema.optionalKey(Objects_58),
+  "enfer": Schema.optionalKey(Objects_59),
+  "fake-provider": Schema.optionalKey(Objects_60),
+  "featherless": Schema.optionalKey(Objects_61),
+  "fireworks": Schema.optionalKey(Objects_62),
+  "fish-audio": Schema.optionalKey(Objects_63),
+  "friendli": Schema.optionalKey(Objects_64),
+  "gmicloud": Schema.optionalKey(Objects_65),
+  "google-ai-studio": Schema.optionalKey(Objects_66),
+  "google-vertex": Schema.optionalKey(Objects_67),
+  "gopomelo": Schema.optionalKey(Objects_68),
+  "groq": Schema.optionalKey(Objects_69),
+  "heygen": Schema.optionalKey(Objects_70),
+  "huggingface": Schema.optionalKey(Objects_71),
+  "hyperbolic": Schema.optionalKey(Objects_72),
+  "hyperbolic-quantized": Schema.optionalKey(Objects_73),
+  "inception": Schema.optionalKey(Objects_74),
+  "inceptron": Schema.optionalKey(Objects_75),
+  "inferact-vllm": Schema.optionalKey(Objects_76),
+  "inference-net": Schema.optionalKey(Objects_77),
+  "infermatic": Schema.optionalKey(Objects_78),
+  "inflection": Schema.optionalKey(Objects_79),
+  "inocloud": Schema.optionalKey(Objects_80),
+  "io-net": Schema.optionalKey(Objects_81),
+  "ionstream": Schema.optionalKey(Objects_82),
+  "klusterai": Schema.optionalKey(Objects_83),
+  "krea": Schema.optionalKey(Objects_84),
+  "lambda": Schema.optionalKey(Objects_85),
+  "lepton": Schema.optionalKey(Objects_86),
+  "liquid": Schema.optionalKey(Objects_87),
+  "lynn": Schema.optionalKey(Objects_88),
+  "lynn-private": Schema.optionalKey(Objects_89),
+  "mancer": Schema.optionalKey(Objects_90),
+  "mancer-old": Schema.optionalKey(Objects_91),
+  "mara": Schema.optionalKey(Objects_92),
+  "meta": Schema.optionalKey(Objects_93),
+  "minimax": Schema.optionalKey(Objects_94),
+  "mistral": Schema.optionalKey(Objects_95),
+  "modal": Schema.optionalKey(Objects_96),
+  "modelrun": Schema.optionalKey(Objects_97),
+  "modular": Schema.optionalKey(Objects_98),
+  "moonshotai": Schema.optionalKey(Objects_99),
+  "morph": Schema.optionalKey(Objects_100),
+  "ncompass": Schema.optionalKey(Objects_101),
+  "nebius": Schema.optionalKey(Objects_102),
+  "nex-agi": Schema.optionalKey(Objects_103),
+  "nextbit": Schema.optionalKey(Objects_104),
+  "nineteen": Schema.optionalKey(Objects_105),
+  "novita": Schema.optionalKey(Objects_106),
+  "nvidia": Schema.optionalKey(Objects_107),
+  "octoai": Schema.optionalKey(Objects_108),
+  "open-inference": Schema.optionalKey(Objects_109),
+  "openai": Schema.optionalKey(Objects_110),
+  "parasail": Schema.optionalKey(Objects_111),
+  "perceptron": Schema.optionalKey(Objects_112),
+  "perplexity": Schema.optionalKey(Objects_113),
+  "phala": Schema.optionalKey(Objects_114),
+  "poolside": Schema.optionalKey(Objects_115),
+  "quiver": Schema.optionalKey(Objects_116),
+  "recraft": Schema.optionalKey(Objects_117),
+  "recursal": Schema.optionalKey(Objects_118),
+  "reflection": Schema.optionalKey(Objects_119),
+  "reka": Schema.optionalKey(Objects_120),
+  "relace": Schema.optionalKey(Objects_121),
+  "replicate": Schema.optionalKey(Objects_122),
+  "runway": Schema.optionalKey(Objects_123),
+  "sail-research": Schema.optionalKey(Objects_124),
+  "sakana": Schema.optionalKey(Objects_125),
+  "sakana-ai": Schema.optionalKey(Objects_126),
+  "sambanova": Schema.optionalKey(Objects_127),
+  "sambanova-cloaked": Schema.optionalKey(Objects_128),
+  "seed": Schema.optionalKey(Objects_129),
+  "sf-compute": Schema.optionalKey(Objects_130),
+  "siliconflow": Schema.optionalKey(Objects_131),
+  "sourceful": Schema.optionalKey(Objects_132),
+  "stealth": Schema.optionalKey(Objects_133),
+  "stepfun": Schema.optionalKey(Objects_134),
+  "streamlake": Schema.optionalKey(Objects_135),
+  "switchpoint": Schema.optionalKey(Objects_136),
+  "targon": Schema.optionalKey(Objects_137),
+  "tencent": Schema.optionalKey(Objects_138),
+  "tenstorrent": Schema.optionalKey(Objects_139),
+  "together": Schema.optionalKey(Objects_140),
+  "together-lite": Schema.optionalKey(Objects_141),
+  "ubicloud": Schema.optionalKey(Objects_142),
+  "upstage": Schema.optionalKey(Objects_143),
+  "venice": Schema.optionalKey(Objects_144),
+  "voyageai": Schema.optionalKey(Objects_145),
+  "wafer": Schema.optionalKey(Objects_146),
+  "wandb": Schema.optionalKey(Objects_147),
+  "wandb-legacy": Schema.optionalKey(Objects_148),
+  "xai": Schema.optionalKey(Objects_149),
+  "xiaomi": Schema.optionalKey(Objects_150),
+  "z-ai": Schema.optionalKey(Objects_151)
 }).annotate({
   "description":
     "Provider-specific options keyed by provider slug. Only options for the matched provider are forwarded; the rest are ignored. Unrecognized keys are silently dropped.",
@@ -8752,8 +8811,8 @@ export const OutputItemReasoning = Schema.Struct({
   "summary": Schema.Array(ReasoningSummaryText),
   "type": Schema.Literal("reasoning")
 }).annotate({ "identifier": "OutputItemReasoning" })
-export type RequestMetadata = Objects_149 | null
-export const RequestMetadata = Schema.Union([Objects_149, Schema.Null]).annotate({
+export type RequestMetadata = Objects_153 | null
+export const RequestMetadata = Schema.Union([Objects_153, Schema.Null]).annotate({
   "description":
     "Metadata key-value pairs for the request. Keys must be ≤64 characters and cannot contain brackets. Values must be ≤512 characters. Maximum 16 pairs allowed.",
   "identifier": "RequestMetadata"
@@ -8808,8 +8867,8 @@ export const SearchModelsServerTool_OpenRouter = Schema.Struct({
   "description": "OpenRouter built-in server tool: searches and filters AI models available on OpenRouter",
   "identifier": "SearchModelsServerTool_OpenRouter"
 })
-export type ServerToolUseDetails = Objects_150 | null
-export const ServerToolUseDetails = Schema.Union([Objects_150, Schema.Null]).annotate({
+export type ServerToolUseDetails = Objects_154 | null
+export const ServerToolUseDetails = Schema.Union([Objects_154, Schema.Null]).annotate({
   "description": "Usage for server-side tool execution (e.g., web search)",
   "identifier": "ServerToolUseDetails"
 })
@@ -9825,8 +9884,8 @@ export const WebFetchServerToolConfig = Schema.Struct({
   "description": "Configuration for the openrouter:web_fetch server tool",
   "identifier": "WebFetchServerToolConfig"
 })
-export type WebSearchDomainFilter = Objects_152 | null
-export const WebSearchDomainFilter = Schema.Union([Objects_152, Schema.Null]).annotate({
+export type WebSearchDomainFilter = Objects_156 | null
+export const WebSearchDomainFilter = Schema.Union([Objects_156, Schema.Null]).annotate({
   "identifier": "WebSearchDomainFilter"
 })
 export type WebSearchPlugin = {
@@ -9985,8 +10044,8 @@ export const OutputWebSearchCallItem = Schema.Struct({
   "status": WebSearchStatus,
   "type": Schema.Literal("web_search_call")
 }).annotate({ "identifier": "OutputWebSearchCallItem" })
-export type WebSearchUserLocation = Objects_153 | null
-export const WebSearchUserLocation = Schema.Union([Objects_153, Schema.Null]).annotate({
+export type WebSearchUserLocation = Objects_157 | null
+export const WebSearchUserLocation = Schema.Union([Objects_157, Schema.Null]).annotate({
   "description": "User location information for web search",
   "identifier": "WebSearchUserLocation"
 })
@@ -9997,6 +10056,7 @@ export type WebSearchConfig = {
   readonly "max_characters"?: number
   readonly "max_results"?: number
   readonly "max_total_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchQualityLevel
   readonly "user_location"?: WebSearchUserLocationServerTool
 }
@@ -10022,6 +10082,12 @@ export const WebSearchConfig = Schema.Struct({
         "Maximum total number of search results across all search calls in a single request. Once this limit is reached, the tool will stop returning new results. Useful for controlling cost and context size in agentic loops. Defaults to 50 when not specified."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
   "search_context_size": Schema.optionalKey(SearchQualityLevel),
   "user_location": Schema.optionalKey(WebSearchUserLocationServerTool)
 }).annotate({ "identifier": "WebSearchConfig" })
@@ -10032,6 +10098,7 @@ export type WebSearchServerToolConfig = {
   readonly "max_characters"?: number
   readonly "max_results"?: number
   readonly "max_total_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchQualityLevel
   readonly "user_location"?: WebSearchUserLocationServerTool
 }
@@ -10055,6 +10122,12 @@ export const WebSearchServerToolConfig = Schema.Struct({
     Schema.Number.annotate({
       "description":
         "Maximum total number of search results across all search calls in a single request. Once this limit is reached, the tool will stop returning new results. Useful for controlling cost and context size in agentic loops. Defaults to 50 when not specified."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
   "search_context_size": Schema.optionalKey(SearchQualityLevel),
@@ -10082,14 +10155,26 @@ export type UpdateWorkspaceResponse = { readonly "data": Workspace }
 export const UpdateWorkspaceResponse = Schema.Struct({
   "data": Schema.suspend((): Schema.Codec<Workspace> => Workspace).annotate({ "description": "The updated workspace" })
 }).annotate({ "identifier": "UpdateWorkspaceResponse" })
-export type ListWorkspaceBudgetsResponse = { readonly "data": ReadonlyArray<WorkspaceBudget> }
+export type ListWorkspaceBudgetsResponse = {
+  readonly "data": ReadonlyArray<WorkspaceBudget>
+  readonly "include_byok_in_budgets": boolean
+}
 export const ListWorkspaceBudgetsResponse = Schema.Struct({
-  "data": Schema.Array(WorkspaceBudget).annotate({ "description": "List of budgets configured for the workspace" })
+  "data": Schema.Array(WorkspaceBudget).annotate({ "description": "List of budgets configured for the workspace" }),
+  "include_byok_in_budgets": Schema.Boolean.annotate({
+    "description": "Whether BYOK spend is included in the workspace budgets"
+  })
 }).annotate({ "identifier": "ListWorkspaceBudgetsResponse" })
-export type UpsertWorkspaceBudgetResponse = { readonly "data": WorkspaceBudget }
+export type UpsertWorkspaceBudgetResponse = {
+  readonly "data": WorkspaceBudget
+  readonly "include_byok_in_budgets": boolean
+}
 export const UpsertWorkspaceBudgetResponse = Schema.Struct({
   "data": Schema.suspend((): Schema.Codec<WorkspaceBudget> => WorkspaceBudget).annotate({
     "description": "The created or updated budget"
+  }),
+  "include_byok_in_budgets": Schema.Boolean.annotate({
+    "description": "Whether BYOK spend is included in the workspace budgets"
   })
 }).annotate({ "identifier": "UpsertWorkspaceBudgetResponse" })
 export type BulkAddWorkspaceMembersResponse = {
@@ -10301,6 +10386,58 @@ export const FusionServerToolConfig = Schema.Struct({
 }).annotate({
   "description": "Configuration for the openrouter:fusion server tool.",
   "identifier": "FusionServerToolConfig"
+})
+export type MessagesToolAdditionBlock = {
+  readonly "cache_control"?: AnthropicCacheControlDirective
+  readonly "tool": { readonly "name": string; readonly "type": "tool_reference" } | {
+    readonly "name": string
+    readonly "server_name": string
+    readonly "type": "mcp_tool_reference"
+  } | { readonly "server_name": string; readonly "type": "mcp_toolset_reference" }
+  readonly "type": "tool_addition"
+}
+export const MessagesToolAdditionBlock = Schema.Struct({
+  "cache_control": Schema.optionalKey(AnthropicCacheControlDirective),
+  "tool": Schema.Union([
+    Schema.Struct({ "name": Schema.String, "type": Schema.Literal("tool_reference") }),
+    Schema.Struct({
+      "name": Schema.String,
+      "server_name": Schema.String,
+      "type": Schema.Literal("mcp_tool_reference")
+    }),
+    Schema.Struct({ "server_name": Schema.String, "type": Schema.Literal("mcp_toolset_reference") })
+  ], { mode: "oneOf" }),
+  "type": Schema.Literal("tool_addition")
+}).annotate({
+  "description":
+    "Loads a previously deferred tool (declared in `tools` with `defer_loading: true`) mid-conversation without invalidating the prompt cache. Only valid in `role: \"system\"` messages. Not supported on Claude Sonnet 5 or models older than Claude Opus 4.8.",
+  "identifier": "MessagesToolAdditionBlock"
+})
+export type MessagesToolRemovalBlock = {
+  readonly "cache_control"?: AnthropicCacheControlDirective
+  readonly "tool": { readonly "name": string; readonly "type": "tool_reference" } | {
+    readonly "name": string
+    readonly "server_name": string
+    readonly "type": "mcp_tool_reference"
+  } | { readonly "server_name": string; readonly "type": "mcp_toolset_reference" }
+  readonly "type": "tool_removal"
+}
+export const MessagesToolRemovalBlock = Schema.Struct({
+  "cache_control": Schema.optionalKey(AnthropicCacheControlDirective),
+  "tool": Schema.Union([
+    Schema.Struct({ "name": Schema.String, "type": Schema.Literal("tool_reference") }),
+    Schema.Struct({
+      "name": Schema.String,
+      "server_name": Schema.String,
+      "type": Schema.Literal("mcp_tool_reference")
+    }),
+    Schema.Struct({ "server_name": Schema.String, "type": Schema.Literal("mcp_toolset_reference") })
+  ], { mode: "oneOf" }),
+  "type": Schema.Literal("tool_removal")
+}).annotate({
+  "description":
+    "Removes a tool from the conversation mid-conversation without invalidating the prompt cache. Only valid in `role: \"system\"` messages. Not supported on Claude Sonnet 5 or models older than Claude Opus 4.8.",
+  "identifier": "MessagesToolRemovalBlock"
 })
 export type AnthropicUsage = {
   readonly "cache_creation": AnthropicCacheCreation
@@ -11808,7 +11945,7 @@ export const FileParserPlugin = Schema.Struct({
   "id": Schema.Literal("file-parser"),
   "pdf": Schema.optionalKey(PDFParserOptions)
 }).annotate({ "identifier": "FileParserPlugin" })
-export type Objects_148 = {
+export type Objects_152 = {
   readonly "allow_fallbacks"?: boolean | null
   readonly "data_collection"?: "deny" | "allow" | null
   readonly "enforce_distillable_text"?: boolean | null
@@ -11829,7 +11966,7 @@ export type Objects_148 = {
   readonly "sort"?: ProviderSort | ProviderSortConfig | null
   readonly "zdr"?: boolean | null
 }
-export const Objects_148 = Schema.Struct({
+export const Objects_152 = Schema.Struct({
   "allow_fallbacks": Schema.optionalKey(
     Schema.Union([Schema.Boolean, Schema.Null]).annotate({
       "description":
@@ -12323,6 +12460,7 @@ export type Guardrail = {
   readonly "id": string
   readonly "ignored_models"?: ReadonlyArray<string> | null
   readonly "ignored_providers"?: ReadonlyArray<string> | null
+  readonly "include_byok_in_budgets": boolean
   readonly "limit_usd"?: number | null
   readonly "name": string
   readonly "reset_interval"?: GuardrailInterval
@@ -12400,6 +12538,10 @@ export const Guardrail = Schema.Struct({
       "description": "List of provider IDs to exclude from routing"
     })
   ),
+  "include_byok_in_budgets": Schema.Boolean.annotate({
+    "description":
+      "Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend."
+  }),
   "limit_usd": Schema.optionalKey(
     Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ "expected": "a finite number" })), Schema.Null])
       .annotate({ "description": "Spending limit in USD", "format": "double" })
@@ -12427,6 +12569,7 @@ export type CreateGuardrailRequest = {
   readonly "enforce_zdr_xai"?: boolean | null
   readonly "ignored_models"?: ReadonlyArray<string> | null
   readonly "ignored_providers"?: ReadonlyArray<string> | null
+  readonly "include_byok_in_budgets"?: boolean
   readonly "limit_usd"?: number | null
   readonly "name": string
   readonly "reset_interval"?: GuardrailInterval
@@ -12520,6 +12663,12 @@ export const CreateGuardrailRequest = Schema.Struct({
       Schema.Null
     ]).annotate({ "description": "List of provider IDs to exclude from routing" })
   ),
+  "include_byok_in_budgets": Schema.optionalKey(
+    Schema.Boolean.annotate({
+      "description":
+        "Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Defaults to false."
+    })
+  ),
   "limit_usd": Schema.optionalKey(
     Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ "expected": "a finite number" })), Schema.Null])
       .annotate({ "description": "Spending limit in USD", "format": "double" })
@@ -12549,6 +12698,7 @@ export type UpdateGuardrailRequest = {
   readonly "enforce_zdr_xai"?: boolean | null
   readonly "ignored_models"?: ReadonlyArray<string> | null
   readonly "ignored_providers"?: ReadonlyArray<string> | null
+  readonly "include_byok_in_budgets"?: boolean
   readonly "limit_usd"?: number | null
   readonly "name"?: string
   readonly "reset_interval"?: GuardrailInterval
@@ -12640,6 +12790,12 @@ export const UpdateGuardrailRequest = Schema.Struct({
       ),
       Schema.Null
     ]).annotate({ "description": "List of provider IDs to exclude from routing" })
+  ),
+  "include_byok_in_budgets": Schema.optionalKey(
+    Schema.Boolean.annotate({
+      "description":
+        "Whether BYOK (bring-your-own-key) inference spend counts toward this guardrail's limit_usd, in addition to OpenRouter credit spend. Omit to leave unchanged."
+    })
   ),
   "limit_usd": Schema.optionalKey(
     Schema.Union([Schema.Number.check(Schema.isFinite().annotate({ "expected": "a finite number" })), Schema.Null])
@@ -13313,6 +13469,7 @@ export type Preview_20250311_WebSearchServerTool = {
   readonly "engine"?: WebSearchEngineEnum
   readonly "filters"?: WebSearchDomainFilter
   readonly "max_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchContextSizeEnum
   readonly "type": "web_search_preview_2025_03_11"
   readonly "user_location"?: Preview_WebSearchUserLocation
@@ -13326,6 +13483,12 @@ export const Preview_20250311_WebSearchServerTool = Schema.Struct({
         "Maximum number of search results to return per search call. Defaults to 5. Applies to Exa, Firecrawl, Parallel, and Perplexity engines; ignored with native provider search. Perplexity supports a maximum of 20; values above 20 are clamped."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
   "search_context_size": Schema.optionalKey(SearchContextSizeEnum),
   "type": Schema.Literal("web_search_preview_2025_03_11"),
   "user_location": Schema.optionalKey(Preview_WebSearchUserLocation)
@@ -13337,6 +13500,7 @@ export type Preview_WebSearchServerTool = {
   readonly "engine"?: WebSearchEngineEnum
   readonly "filters"?: WebSearchDomainFilter
   readonly "max_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchContextSizeEnum
   readonly "type": "web_search_preview"
   readonly "user_location"?: Preview_WebSearchUserLocation
@@ -13350,6 +13514,12 @@ export const Preview_WebSearchServerTool = Schema.Struct({
         "Maximum number of search results to return per search call. Defaults to 5. Applies to Exa, Firecrawl, Parallel, and Perplexity engines; ignored with native provider search. Perplexity supports a maximum of 20; values above 20 are clamped."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
   "search_context_size": Schema.optionalKey(SearchContextSizeEnum),
   "type": Schema.Literal("web_search_preview"),
   "user_location": Schema.optionalKey(Preview_WebSearchUserLocation)
@@ -13358,6 +13528,7 @@ export type Legacy_WebSearchServerTool = {
   readonly "engine"?: WebSearchEngineEnum
   readonly "filters"?: WebSearchDomainFilter
   readonly "max_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchContextSizeEnum
   readonly "type": "web_search"
   readonly "user_location"?: WebSearchUserLocation
@@ -13371,6 +13542,12 @@ export const Legacy_WebSearchServerTool = Schema.Struct({
         "Maximum number of search results to return per search call. Defaults to 5. Applies to Exa, Firecrawl, Parallel, and Perplexity engines; ignored with native provider search. Perplexity supports a maximum of 20; values above 20 are clamped."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
   "search_context_size": Schema.optionalKey(SearchContextSizeEnum),
   "type": Schema.Literal("web_search"),
   "user_location": Schema.optionalKey(WebSearchUserLocation)
@@ -13379,6 +13556,7 @@ export type WebSearchServerTool = {
   readonly "engine"?: WebSearchEngineEnum
   readonly "filters"?: WebSearchDomainFilter
   readonly "max_results"?: number
+  readonly "max_uses"?: number
   readonly "search_context_size"?: SearchContextSizeEnum
   readonly "type": "web_search_2025_08_26"
   readonly "user_location"?: WebSearchUserLocation
@@ -13390,6 +13568,12 @@ export const WebSearchServerTool = Schema.Struct({
     Schema.Number.annotate({
       "description":
         "Maximum number of search results to return per search call. Defaults to 5. Applies to Exa, Firecrawl, Parallel, and Perplexity engines; ignored with native provider search. Perplexity supports a maximum of 20; values above 20 are clamped."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
   "search_context_size": Schema.optionalKey(SearchContextSizeEnum),
@@ -13406,6 +13590,7 @@ export type ChatWebSearchShorthand = {
   readonly "max_characters"?: number
   readonly "max_results"?: number
   readonly "max_total_results"?: number
+  readonly "max_uses"?: number
   readonly "parameters"?: WebSearchConfig
   readonly "search_context_size"?: SearchQualityLevel
   readonly "type": "web_search" | "web_search_preview" | "web_search_preview_2025_03_11" | "web_search_2025_08_26"
@@ -13441,6 +13626,12 @@ export const ChatWebSearchShorthand = Schema.Struct({
     Schema.Number.annotate({
       "description":
         "Maximum total number of search results across all search calls in a single request. Once this limit is reached, the tool will stop returning new results. Useful for controlling cost and context size in agentic loops. Defaults to 50 when not specified."
+    }).check(Schema.isInt().annotate({ "expected": "an integer" }))
+  ),
+  "max_uses": Schema.optionalKey(
+    Schema.Number.annotate({
+      "description":
+        "Maximum number of web searches the model may perform in a single request. Once reached, further search calls return an error result instead of executing. Applies to the Exa, Firecrawl, Parallel, and Perplexity engines. With native provider search, forwarded only to Anthropic (as `max_uses`); other native search providers have no equivalent parameter and ignore it."
     }).check(Schema.isInt().annotate({ "expected": "an integer" }))
   ),
   "parameters": Schema.optionalKey(WebSearchConfig),
@@ -13800,8 +13991,8 @@ export const UpdateObservabilityDestinationRequest = Schema.Struct({
       .check(Schema.isFinite().annotate({ "expected": "a finite number" }))
   )
 }).annotate({ "identifier": "UpdateObservabilityDestinationRequest" })
-export type ProviderPreferences = Objects_148 | null
-export const ProviderPreferences = Schema.Union([Objects_148, Schema.Null]).annotate({
+export type ProviderPreferences = Objects_152 | null
+export const ProviderPreferences = Schema.Union([Objects_152, Schema.Null]).annotate({
   "description": "When multiple model providers are available, optionally indicate your routing preference.",
   "identifier": "ProviderPreferences"
 })
@@ -14046,12 +14237,12 @@ export const OpenAIResponseInputMessageItem = Schema.Struct({
   "role": Schema.Literals(["user", "system", "developer"]),
   "type": Schema.optionalKey(Schema.Literal("message"))
 }).annotate({ "identifier": "OpenAIResponseInputMessageItem" })
-export type Objects_151 = {
+export type Objects_155 = {
   readonly "id": string
   readonly "variables"?: { readonly [x: string]: string | InputText | InputImage | InputFile } | null
   readonly [x: string]: Schema.Json
 }
-export const Objects_151 = Schema.StructWithRest(
+export const Objects_155 = Schema.StructWithRest(
   Schema.Struct({
     "id": Schema.String,
     "variables": Schema.optionalKey(
@@ -14472,9 +14663,12 @@ export type MessagesMessageParam = {
       | {
         readonly "cache_control"?: AnthropicCacheControlDirective
         readonly "content": string | null
+        readonly "encrypted_content"?: string | null
         readonly "type": "compaction"
       }
       | MessagesAdvisorToolResultBlock
+      | MessagesToolAdditionBlock
+      | MessagesToolRemovalBlock
     >
   readonly "role": "user" | "assistant" | "system"
 }
@@ -14544,9 +14738,12 @@ export const MessagesMessageParam = Schema.Struct({
         Schema.Struct({
           "cache_control": Schema.optionalKey(AnthropicCacheControlDirective),
           "content": Schema.Union([Schema.String, Schema.Null]),
+          "encrypted_content": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
           "type": Schema.Literal("compaction")
         }),
-        MessagesAdvisorToolResultBlock
+        MessagesAdvisorToolResultBlock,
+        MessagesToolAdditionBlock,
+        MessagesToolRemovalBlock
       ], { mode: "oneOf" })
     )
   ]),
@@ -14690,8 +14887,8 @@ export const ChatUserMessage = Schema.Struct({
   "name": Schema.optionalKey(Schema.String.annotate({ "description": "Optional name for the user" })),
   "role": Schema.Literal("user")
 }).annotate({ "description": "User message", "identifier": "ChatUserMessage" })
-export type StoredPromptTemplate = Objects_151 | null
-export const StoredPromptTemplate = Schema.Union([Objects_151, Schema.Null]).annotate({
+export type StoredPromptTemplate = Objects_155 | null
+export const StoredPromptTemplate = Schema.Union([Objects_155, Schema.Null]).annotate({
   "identifier": "StoredPromptTemplate"
 })
 export type ModelResponse = { readonly "data": Model }
@@ -15290,6 +15487,7 @@ export type MessagesRequest = {
   readonly "tools"?: ReadonlyArray<
     | {
       readonly "cache_control"?: AnthropicCacheControlDirective
+      readonly "defer_loading"?: boolean
       readonly "description"?: string
       readonly "input_schema": {
         readonly "properties"?: Schema.Json
@@ -15482,6 +15680,7 @@ export const MessagesRequest = Schema.Struct({
   "tools": Schema.optionalKey(Schema.Array(Schema.Union([
     Schema.Struct({
       "cache_control": Schema.optionalKey(AnthropicCacheControlDirective),
+      "defer_loading": Schema.optionalKey(Schema.Boolean),
       "description": Schema.optionalKey(Schema.String),
       "input_schema": Schema.Struct({
         "properties": Schema.optionalKey(Schema.Json.annotate({ "expected": "JSON value" })),
@@ -25314,7 +25513,7 @@ export type MessagesContentBlockStartEvent = {
     | AnthropicContainerUpload
     | AnthropicCompactionBlock
     | AnthropicAdvisorToolResult
-    | { readonly "content": string | null; readonly "type": "compaction" }
+    | { readonly "content": string | null; readonly "encrypted_content"?: string | null; readonly "type": "compaction" }
   readonly "index": number
   readonly "type": "content_block_start"
 }
@@ -25334,7 +25533,11 @@ export const MessagesContentBlockStartEvent = Schema.Struct({
     AnthropicContainerUpload,
     AnthropicCompactionBlock,
     AnthropicAdvisorToolResult,
-    Schema.Struct({ "content": Schema.Union([Schema.String, Schema.Null]), "type": Schema.Literal("compaction") })
+    Schema.Struct({
+      "content": Schema.Union([Schema.String, Schema.Null]),
+      "encrypted_content": Schema.optionalKey(Schema.Union([Schema.String, Schema.Null])),
+      "type": Schema.Literal("compaction")
+    })
   ]),
   "index": Schema.Number.check(Schema.isInt().annotate({ "expected": "an integer" })),
   "type": Schema.Literal("content_block_start")
@@ -26860,6 +27063,7 @@ export type MessagesStartEvent = {
       | "Cerebras"
       | "Chutes"
       | "Cirrascale"
+      | "Claude Platform on AWS"
       | "Clarifai"
       | "Cloudflare"
       | "Cohere"
@@ -26900,6 +27104,7 @@ export type MessagesStartEvent = {
       | "Modular"
       | "Moonshot AI"
       | "Morph"
+      | "VoyageAI by MongoDB"
       | "NCompass"
       | "Nebius"
       | "Nex AGI"
@@ -27016,6 +27221,7 @@ export const MessagesStartEvent = Schema.Struct({
         "Cerebras",
         "Chutes",
         "Cirrascale",
+        "Claude Platform on AWS",
         "Clarifai",
         "Cloudflare",
         "Cohere",
@@ -27056,6 +27262,7 @@ export const MessagesStartEvent = Schema.Struct({
         "Modular",
         "Moonshot AI",
         "Morph",
+        "VoyageAI by MongoDB",
         "NCompass",
         "Nebius",
         "Nex AGI",
@@ -28179,6 +28386,7 @@ export type ListBYOKKeysParams = {
     | "meta"
     | "minimax"
     | "mistral"
+    | "modal"
     | "modelrun"
     | "modular"
     | "moonshotai"
@@ -28203,6 +28411,7 @@ export type ListBYOKKeysParams = {
     | "runway"
     | "sail-research"
     | "sakana"
+    | "sakana-ai"
     | "sambanova"
     | "seed"
     | "siliconflow"
@@ -28217,6 +28426,7 @@ export type ListBYOKKeysParams = {
     | "venice"
     | "wafer"
     | "wandb"
+    | "wandb-legacy"
     | "xai"
     | "xiaomi"
     | "z-ai"
@@ -28303,6 +28513,7 @@ export const ListBYOKKeysParams = Schema.Struct({
       "meta",
       "minimax",
       "mistral",
+      "modal",
       "modelrun",
       "modular",
       "moonshotai",
@@ -28327,6 +28538,7 @@ export const ListBYOKKeysParams = Schema.Struct({
       "runway",
       "sail-research",
       "sakana",
+      "sakana-ai",
       "sambanova",
       "seed",
       "siliconflow",
@@ -28341,6 +28553,7 @@ export const ListBYOKKeysParams = Schema.Struct({
       "venice",
       "wafer",
       "wandb",
+      "wandb-legacy",
       "xai",
       "xiaomi",
       "z-ai"
