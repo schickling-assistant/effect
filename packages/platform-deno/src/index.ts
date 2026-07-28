@@ -7,6 +7,11 @@
 /**
  * @since 4.0.0
  */
+export * as DenoFileSystem from "./DenoFileSystem.ts"
+
+/**
+ * @since 4.0.0
+ */
 export * as DenoKeyValueStore from "./DenoKeyValueStore.ts"
 
 /**
