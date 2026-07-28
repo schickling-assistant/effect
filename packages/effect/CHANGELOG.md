@@ -1,5 +1,25 @@
 # effect
 
+## 4.0.0-beta.103
+
+### Patch Changes
+
+- [#6657](https://github.com/Effect-TS/effect/pull/6657) [`205ebc7`](https://github.com/Effect-TS/effect/commit/205ebc776062012581e98fced7ced19adfc44ee7) Thanks @tim-smart! - Use cancellable microtasks when dispatching yielded work from synchronous Effect runs.
+
+- [#6661](https://github.com/Effect-TS/effect/pull/6661) [`ed0ebf8`](https://github.com/Effect-TS/effect/commit/ed0ebf8e5c864d46fed1f232e99c0e680f10a58f) Thanks @tim-smart! - Fix hydrated atoms with `Atom.withReactivity` to refresh after reactive mutations.
+
+- [#6665](https://github.com/Effect-TS/effect/pull/6665) [`a3fd084`](https://github.com/Effect-TS/effect/commit/a3fd08482157bd78b089f77c7b173d54ef68b5cd) Thanks @tim-smart! - Fix `HttpRouter.toWebHandler` context inference for services provided by the application layer.
+
+- [#6681](https://github.com/Effect-TS/effect/pull/6681) [`ee29ddf`](https://github.com/Effect-TS/effect/commit/ee29ddf862c3723ad466abc93ab6f6fe723b2319) Thanks @tim-smart! - Add Web Stream interoperability for `Channel` and `Sink`, plus byte limiting and `ArrayBuffer` collection for `Stream`.
+
+- [#6677](https://github.com/Effect-TS/effect/pull/6677) [`1747440`](https://github.com/Effect-TS/effect/commit/1747440de9a51a56ed3660da748cc01b256adce7) Thanks @tim-smart! - Expose runtime schemas for AI prompt parts and message-specific part unions.
+
+- [#6579](https://github.com/Effect-TS/effect/pull/6579) [`9800e3a`](https://github.com/Effect-TS/effect/commit/9800e3acc8f36530f671bc8b91558cb112f449a7) Thanks @marbemac! - Scope cluster reply serialization failures and peer-delivered defects to their own request instead of the whole runner connection
+
+- [#6659](https://github.com/Effect-TS/effect/pull/6659) [`cc27b19`](https://github.com/Effect-TS/effect/commit/cc27b194b9d13fa3a66ab037e853fca9d41700ff) Thanks @tim-smart! - Preserve prototype accessors when code is compiled with loose object spread transforms.
+
+- [#6625](https://github.com/Effect-TS/effect/pull/6625) [`0a532e5`](https://github.com/Effect-TS/effect/commit/0a532e503f165fdea485a5343fc2f420917e8376) Thanks @lloydrichards! - Add adapter-valued MCP server protocol declarations, route requests through the selected protocol before schema decoding, and add built-in support for MCP `2025-06-18`.
+
 ## 4.0.0-beta.102
 
 ### Patch Changes
